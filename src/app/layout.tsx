@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Providers from "./components/provider";
-
+import ConvexClientProvider from "./ConvexClientProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -25,7 +25,7 @@ export default function RootLayout({
         <link rel="preload" href="microphone-white.svg" as="image" type="image/svg+xml" />
       </head>
       <body className={inter.className + " h-full"}>
-        <Providers>{children}</Providers>
+        <Providers><ConvexClientProvider>{children}</ConvexClientProvider></Providers>
       </body>
     </html>
   );

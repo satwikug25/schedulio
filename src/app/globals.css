@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --background-color: #121212;
-  --text-color: #e0e0e0;
-  --button-bg-color: #333333;
+  --background-color: #ffffff;
+  --text-color: #222222;
+  --button-bg-color: #077b7a;
   --button-text-color: #ffffff;
-  --button-hover-bg-color: #454545;
-  --button-active-bg-color: #555555;
-  --input-bg-color: #333333;
-  --input-text-color: #ffffff;
+  --button-hover-bg-color: #044948;
+  --input-bg-color: #efefef;
+  --input-bg-color-focused: #e0e0e0;
+  --input-text-color: #444444;
   --input-placeholder-color: #888888;
   --message-user-bg-color: #5B5E72;
   --message-assistant-bg-color: #30323E;
@@ -24,23 +24,29 @@ body {
 button {
   background-color: var(--button-bg-color);
   color: var(--button-text-color);
+  transition: background-color 0.2s;
 }
 
 button:hover {
   background-color: var(--button-hover-bg-color);
 }
 
-button:active {
-  background-color: var(--button-active-bg-color);
-}
-
 textarea {
   background-color: var(--input-bg-color);
   color: var(--input-text-color);
+  padding: 10px;
+  outline: none;
+  min-height: 200px;
+  transition: background-color 0.2s;
   ::placeholder {
     color: var(--input-placeholder-color);
   }
+  border-radius: 3px;
 }
+textarea:focus {
+  background-color: var(--input-bg-color-focused);
+}
+
 
 .message-user {
   background-color: var(--message-user-bg-color);
@@ -50,9 +56,30 @@ textarea {
   background-color: var(--message-assistant-bg-color);
 }
 
+#formBox {
+  width: 50%;
+  position: absolute;
+  left: 50%;
+  top: 30px;
+  box-shadow: 0 0 3px 0 #aaaaaa;
+  border-radius: 3px;
+  padding: 10px;
+  transform: translateX(-50%);
+}
+
+#createBusinessHeader {
+  font-size: 20px;
+  width: 100%;
+  text-align: center;
+  margin: 10px auto 20px auto;
+}
+
 select {
   background-color: var(--input-bg-color);
   color: var(--input-text-color);
+  outline: none;
+  padding: 10px;
+  border-radius: 3px;
 }
 
 form {
@@ -73,10 +100,15 @@ form label {
 
 form input {
   padding: 0.5rem;
-  border: 1px solid #ccc;
+  outline: none;
   border-radius: 4px;
   background-color: var(--input-bg-color);
+  transition: background-color 0.2s;
   color: var(--input-text-color);
+}
+
+form input:focus {
+  background-color: var(--input-bg-color-focused);
 }
 
 form button {
