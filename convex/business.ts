@@ -56,7 +56,7 @@ export const pushEventsToDatabase = mutation({
   handler: async (ctx, { phoneNumber, summary, name }) => {
     const business = await ctx.db
       .query("business")
-      .filter((q) => q.eq(q.field("phoneNumber"), "4807918055"))
+      .filter((q) => q.eq(q.field("phoneNumber"), "9999988888"))
       .collect();
     console.log(business[0].events);
     const newEvents = business[0].events.concat([{phoneNumber: phoneNumber, summary: summary, name: name}]);
@@ -96,3 +96,19 @@ export const getAddressesByPhoneNumber = query({
     return business[0].address;
   },
 });
+
+
+export const getBusinessByPhoneNumber = query({
+  args: {
+    phoneNumber: v.optional(v.string()),
+  },
+  handler: async (ctx, { phoneNumber }) => {
+    const business = await ctx.db
+      .query("business")
+      .filter((q) => q.eq(q.field("phoneNumber"), phoneNumber))
+      .collect();
+    
+    return business[0];
+  },
+});
+
