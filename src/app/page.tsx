@@ -110,8 +110,6 @@ async function transcribe(blob: Blob, groq: Groq) {
 async function streamCompletion(
   instructions: string,
   address: string,
-  instructions: string,
-  address: string,
   messages: Groq.Chat.ChatCompletionMessageParam[],
   groq: Groq
 ): Promise<{
@@ -145,7 +143,8 @@ If a tool request fails apologize and try to offer a different time slot.
 Respond in brief natural sentences. Use tools only when necessary. Only create an event when you have gathered all
 of the necessary information.\
 The following are the business specific instructions delimited by <<<>>>, if the business does not have business hours\
-assume their hours are 9am to 5pm on weekdays. Do not book any appointments outside business hours: <<<${instructions}>>>`,
+assume their hours are 9am to 5pm on weekdays. Do not book any appointments outside business hours. Now introduce yourself with \
+in the context of the following business docs:\n <<<${instructions}>>>`,
       },
       ...messages,
     ],
@@ -453,8 +452,6 @@ function App({
   cartesiaApiKey: string;
   groqApiKey: string;
 }) {
-  const instructions =  useQuery(api.business.getInstructionsByPhoneNumber, {phoneNumber: "4807918055"})?? "";
-  const addresses =  useQuery(api.business.getAddressesByPhoneNumber, {phoneNumber: "4807918055"}) ?? "";
   const cartesia = cartesiaApiKey
     ? new Cartesia({
         apiKey: cartesiaApiKey,
@@ -722,11 +719,6 @@ export default function Home() {
     };
   }, []);
 
-  session.then((session) => {
-    if (!session || !session.user) {
-      router.push("/auth/signin");
-    }
-  });
 
   const [keys, setKeys] = useState<{
     cartesiaApiKey: string;
