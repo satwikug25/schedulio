@@ -12,8 +12,6 @@ import { ConvexHttpClient, ConvexClient } from "convex/browser";
 export async function getWeather({location}: {location: string}): Promise<string> {
   console.log("HERE@2743074230");
   try {
-    const httpClient = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL || '');
-    httpClient.mutation(api.business.pushEventsToDatabase).then(console.log);
     const session = await getSession();
     const response = await fetch(`/api/weather?location=${location}`);
     if (response.ok) {
@@ -30,6 +28,8 @@ export async function getWeather({location}: {location: string}): Promise<string
 export async function createEvent({event_json}: {event_json: JSON}): Promise<string> {
   console.log("HERE");
   try {
+    const httpClient = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL || '');
+    httpClient.mutation(api.business.pushEventsToDatabase).then(console.log);
     const session = await getSession();
     const response = await fetch(`/api/calendar`, {
       method: "POST",
@@ -49,21 +49,6 @@ export async function createEvent({event_json}: {event_json: JSON}): Promise<str
   }
 }
 
-// export async function createEvent(event_json: {event_json: JSON}): Promise<string> {
-//   console.log("HERE3");
-//   try {
-//     console.log("HERE");
-//     // Assuming `calendar` is accessible here, if not, you need to pass it as a parameter
-//     // addEvent(1,"From groq","2024-10-02T10:30:00","2024-10-02T13:00:00","#fffff",2);
-//     const updateEvent = useMutation(api.business.pushEventsToDatabase);
-//     const result = await updateEvent({phoneNumber: "6546541321", events: ["From groq"]});
-//     console.log("Result:");
-//     console.log(result);
-//     return JSON.stringify({ success: "Event created from createEvent" });
-//   } catch (error) {
-//     return JSON.stringify({ error: `Error: ${error}` });
-//   }
-// }
 
 export const createEventSchema: Groq.Chat.Completions.ChatCompletionTool = {
   type: "function",
@@ -73,23 +58,20 @@ export const createEventSchema: Groq.Chat.Completions.ChatCompletionTool = {
     parameters: {
       type: "object",
       properties: {
-        event_json: { type: "object", description: "The google calendar event data, which will be used to make the \
-          google calendar event, provide it in the JSON format as can be seen in the example delimited \
-          by triple backticks dont make the function call until you have confirmed it with tthe user \
+        event_json: { type: "object", description: "The calendar event data, which will be used to make the \
+          calendar event, provide it in the JSON format as can be seen in the example delimited \
+          by triple backticks. Do not make the function call until you have confirmed all of the information with tthe user \
           ``` {\
-  'summary': 'Google I/O 2015',\
-  'location': '800 Howard St., San Francisco, CA 94103',\
-  'description': 'A chance to hear more about Google\'s developer products.',\
-  'start': {\
-    'dateTime': '2015-05-28T09:00:00-07:00',\
-    'timeZone': 'America/Los_Angeles'\
-  },\
-  'end': {\
-    'dateTime': '2015-05-28T17:00:00-07:00',\
-    'timeZone': 'America/Los_Angeles'\
-  },\
-  'confirmed': 'true',\
-} ``` " },
+id: 2, \
+text: \"Event 2\", \
+            start: \"2024-10-03T09:30:00\", \
+            end: \"2024-10-03T11:30:00\", \
+            backColor: \"#6aa84f\", \
+            tags: { \
+                participants: 2, \
+            } \
+        } ``` " 
+},
       },
     },
   },

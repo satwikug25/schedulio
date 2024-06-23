@@ -12,8 +12,16 @@ export const saveBusiness = mutation({
     address: v.string(),
     voiceSelect: v.string(),
     instructions: v.string(),
-    events: v.array(v.string()),
-  },
+    events: v.array(v.object({
+      id: v.number(),
+      text: v.string(),
+      start: v.string(),
+      end: v.string(),
+      backColor: v.optional(v.string()),
+      tags: v.object({
+        participants: v.number(),})
+  })),
+},
   handler: async (
     ctx,
     {
@@ -45,7 +53,15 @@ export const saveBusiness = mutation({
 export const pushEventsToDatabase = mutation({
   args: {
     phoneNumber: v.optional(v.string()),
-    events: v.optional(v.array(v.string())),
+    events: v.optional(v.array(v.object({
+      id: v.number(),
+      text: v.string(),
+      start: v.string(),
+      end: v.string(),
+      backColor: v.optional(v.string()),
+      tags: v.object({
+        participants: v.number(),})
+  }))),
   },
   handler: async (ctx, { phoneNumber, events }) => {
     const business = await ctx.db

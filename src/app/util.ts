@@ -17,7 +17,7 @@ export let ievents =  [
             end: "2024-10-03T11:30:00",
             backColor: "#6aa84f",
             tags: {
-                participants: 1,
+                participants: 2,
             }
         },
         {
