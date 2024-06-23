@@ -1,6 +1,5 @@
 import Groq from "groq-sdk";
 
-
 export async function getWeather({location}: {location: string}): Promise<string> {
   try {
     const response = await fetch(`/api/weather?location=${location}`);
@@ -42,7 +41,7 @@ export const createEventSchema: Groq.Chat.Completions.ChatCompletionTool = {
       properties: {
         event_json: { type: "object", description: "The google calendar event data, which will be used to make the \
           google calendar event, provide it in the JSON format as can be seen in the example delimited \
-          by triple backticks \
+          by triple backticks dont make the function call until you have confirmed it with tthe user \
           ``` {\
   'summary': 'Google I/O 2015',\
   'location': '800 Howard St., San Francisco, CA 94103',\
@@ -55,6 +54,7 @@ export const createEventSchema: Groq.Chat.Completions.ChatCompletionTool = {
     'dateTime': '2015-05-28T17:00:00-07:00',\
     'timeZone': 'America/Los_Angeles'\
   },\
+  'confirmed': 'true',\
 } ``` " },
       },
     },
