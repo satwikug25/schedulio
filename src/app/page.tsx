@@ -8,7 +8,7 @@ import { WebPlayer } from "@cartesia/cartesia-js";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { getWeather, getWeatherSchema } from "@/app/tools";
+import { getWeather, getWeatherSchema, createEvent, createEventSchema } from "@/app/tools";
 import { reflectiveWomanEmbedding } from "@/app/voices";
 
 const PLAY_RECORDED_AUDIO = false;
@@ -112,18 +112,22 @@ async function streamCompletion(
     messages: [
       {
         role: "system",
-        content: `You are a helpful assistant.
+        content: `You are a helpful local business assistant. You will aid in answering questions and booking appointments.
+        Ask questions to determine when the customer is free for an appointment and any other data needed to fill out the appointment form.
+        The appointment form has the following fields to fill out: name, email, phone number, date, time, and description.
+        When you have the above information create the event with the name as the title and location being 101 Main St, San Francisco, CA 94105.
         
 You are Samantha.
 
-Respond in brief natural sentences. Use tools when appropriate before giving a response. Only use a tool if it is necessary.`,
+Respond in brief natural sentences. Use tools only when necessary. Only create an event when you have gathered all
+of the necessary information.`,
       },
       ...messages,
     ],
-    tools: [getWeatherSchema],
+    tools: [getWeatherSchema, createEventSchema],
     model: "llama3-70b-8192",
     temperature: 0.7,
-    max_tokens: 1024,
+    max_tokens: 4096,
     seed: 42,
     top_p: 1,
     stream: stream,
