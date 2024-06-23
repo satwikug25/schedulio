@@ -2,8 +2,10 @@
 import React, { useState } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
+  const router = useRouter();
   const saveBusiness = useMutation(api.business.saveBusiness);
   const [form, setForm] = useState({
     name: "",
@@ -33,6 +35,8 @@ export default function Page() {
       instructions: form.instructions,
       events: [{phoneNumber: "", summary:""}],
     });
+    router.push('/')
+
   };
 
   return (

@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { getWeather, getWeatherSchema, createEvent, createEventSchema, getEventsOnDay, getEventsOnDaySchema } from "@/app/tools";
 import { reflectiveWomanEmbedding } from "@/app/voices";
-import { api } from "../../convex/_generated/api";
+import { api } from "../../../convex/_generated/api";
 
 import { ConvexHttpClient, ConvexClient } from "convex/browser";
 import { useQuery } from "convex/react";
