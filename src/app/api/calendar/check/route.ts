@@ -24,6 +24,7 @@ export async function GET(request: Request) {
   oauth2Client.setCredentials({ access_token: session.accessToken });
 
   const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+  console.log(minDate, maxDate);
 
   try {
     const event_list = await calendar.events.list({

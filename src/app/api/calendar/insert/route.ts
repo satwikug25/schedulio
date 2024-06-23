@@ -109,6 +109,7 @@ export async function POST(req: NextRequest) {
     const response = await calendar.events.insert({
       calendarId: 'primary',
       requestBody: calendarEvent,
+      id: 'aaaa1'
     });
     console.log('Event created:', response.data);
     return NextResponse.json(response.data, { status: 200 });

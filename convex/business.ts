@@ -50,16 +50,16 @@ export const saveBusiness = mutation({
 export const pushEventsToDatabase = mutation({
   args: {
     phoneNumber: v.optional(v.string()),
-    summary: v.optional(v.string()
-    ),
+    summary: v.optional(v.string()),
+    name: v.optional(v.string()),
   },
-  handler: async (ctx, { phoneNumber, summary }) => {
+  handler: async (ctx, { phoneNumber, summary, name }) => {
     const business = await ctx.db
       .query("business")
       .filter((q) => q.eq(q.field("phoneNumber"), "4807918055"))
       .collect();
     console.log(business[0].events);
-    const newEvents = business[0].events.concat([{phoneNumber: phoneNumber, summary: summary}]);
+    const newEvents = business[0].events.concat([{phoneNumber: phoneNumber, summary: summary, name: name}]);
     console.log("newEvents");
     console.log(newEvents);
     const businessId: Id<"business"> = business[0]._id;
@@ -81,6 +81,8 @@ export const getInstructionsByPhoneNumber = query({
     return business[0].instructions;
   },
 });
+
+
 
 export const getAddressesByPhoneNumber = query({
   args: {

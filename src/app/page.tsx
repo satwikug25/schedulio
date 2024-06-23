@@ -110,6 +110,8 @@ async function transcribe(blob: Blob, groq: Groq) {
 async function streamCompletion(
   instructions: string,
   address: string,
+  instructions: string,
+  address: string,
   messages: Groq.Chat.ChatCompletionMessageParam[],
   groq: Groq
 ): Promise<{
@@ -127,9 +129,10 @@ async function streamCompletion(
         role: "system",
         content: `You are a helpful local business assistant. You will aid in answering questions and booking appointments.
         Ask questions to determine when the customer is free for an appointment and any other data needed to fill out the appointment form.
-        The appointment form has the following fields to fill out: name, email, phone number, date, time, and description.
+        The appointment form has the following fields to fill out: name, email, phone number, date, and time, and reason.
         When you have the above information create the event with the name as the title and location being ${address}.
-        Also put the phone number and email in the description of the event.By the way, today's date is ${new Date().toLocaleDateString()}, so if the date is before today, DO NOT book the appointment.
+        Today is ${new Date().toLocaleDateString()}, all appointments should \
+        be after that date.           For event creation make sure to fill out the phone, email, and name fields. And the reason for the appointment in the summary field.\
 Whenever a customer asks for an appointment date make sure to check the calendar for availability on that day.
  If they dont mention working hours, assume they are open from 9am to 5pm on weekdays and hence dont book any appointments outside of these hours
 Double check that the information you have recieved is correct at the end of the conversation, before making the appointment.
@@ -137,9 +140,12 @@ Double check that the information you have recieved is correct at the end of the
 You are Samantha. 
 DO NOT offer any appointment slots without first checking to confirm their aviailability.
 Make sure to follow through on tool requests and properly format them with proper inputs.
+If a tool request fails apologize and try to offer a different time slot.
 
 Respond in brief natural sentences. Use tools only when necessary. Only create an event when you have gathered all
-of the necessary information.`,
+of the necessary information.\
+The following are the business specific instructions delimited by <<<>>>, if the business does not have business hours\
+assume their hours are 9am to 5pm on weekdays. Do not book any appointments outside business hours: <<<${instructions}>>>`,
       },
       ...messages,
     ],
@@ -447,6 +453,8 @@ function App({
   cartesiaApiKey: string;
   groqApiKey: string;
 }) {
+  const instructions =  useQuery(api.business.getInstructionsByPhoneNumber, {phoneNumber: "4807918055"})?? "";
+  const addresses =  useQuery(api.business.getAddressesByPhoneNumber, {phoneNumber: "4807918055"}) ?? "";
   const cartesia = cartesiaApiKey
     ? new Cartesia({
         apiKey: cartesiaApiKey,
