@@ -96,7 +96,7 @@ import { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import { NextRequest } from 'next/server';
 
-const options: NextAuthOptions = {
+export const auth_options: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || '',
@@ -117,11 +117,12 @@ const options: NextAuthOptions = {
     },
     async session({ session, token }) {
       session.accessToken = token.accessToken as string;
+      console.log(session.accessToken);
       return session;
     }
   }
 };
 
-const handler = NextAuth(options);
+const handler = NextAuth(auth_options);
 
 export { handler as GET, handler as POST };

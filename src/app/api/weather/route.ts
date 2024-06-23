@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth/next";
 
 export async function GET(request: Request) {
   const session = await getServerSession();
-
+  //console.log('weather');
   if (!session || !session.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
