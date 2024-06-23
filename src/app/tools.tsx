@@ -17,7 +17,7 @@ export async function getWeather({location}: {location: string}): Promise<string
 
 export async function createEvent({event_json}: {event_json: JSON}): Promise<string> {
   try {
-    const response = await fetch(`/api/events`, {
+    const response = await fetch(`/api/calendar`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(event_json),
@@ -55,10 +55,6 @@ export const createEventSchema: Groq.Chat.Completions.ChatCompletionTool = {
     'dateTime': '2015-05-28T17:00:00-07:00',\
     'timeZone': 'America/Los_Angeles'\
   },\
-  'attendees': [\
-    {'email': 'lpage@example.com'},\
-    {'email': 'sbrin@example.com'}\
-  ],\
 } ``` " },
       },
     },
