@@ -144,7 +144,7 @@ Respond in brief natural sentences. Use tools only when necessary. Only create a
 of the necessary information.\
 The following are the business specific instructions delimited by <<<>>>, if the business does not have business hours\
 assume their hours are 9am to 5pm on weekdays. Do not book any appointments outside business hours. Now introduce yourself with \
-in the context of the following business docs:\n <<<${instructions}>>>`,
+in the context of the following business docs:\: <<<${instructions}>>>`,
       },
       ...messages,
     ],
@@ -719,6 +719,11 @@ export default function Home() {
     };
   }, []);
 
+  session.then((session) => {
+    if (!session || !session.user) {
+      router.push("/auth/signin");
+    }
+  });
 
   const [keys, setKeys] = useState<{
     cartesiaApiKey: string;
