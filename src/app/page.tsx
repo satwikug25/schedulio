@@ -17,6 +17,7 @@ const GROQ_ORANGE = "#F55036";
 
 const toolHandlers: { [key: string]: (...args: any[]) => any } = {
   getWeather: getWeather,
+  createEvent: createEvent,
 };
 
 function useTTS(cartesia: Cartesia | null) {

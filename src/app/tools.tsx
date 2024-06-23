@@ -16,7 +16,7 @@ export async function getWeather({location}: {location: string}): Promise<string
 
 export async function createEvent({event_json}: {event_json: JSON}): Promise<string> {
   try {
-    const response = await fetch(`/api/calendar`, {
+    const response = await fetch('/api/calendar', {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(event_json),
