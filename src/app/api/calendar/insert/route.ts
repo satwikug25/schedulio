@@ -72,7 +72,7 @@
 import { google } from 'googleapis';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { Options } from '../auth/[...nextauth]/route';
+import { Options } from '../../auth/[...nextauth]/route';
 
 export async function POST(req: NextRequest) {
   console.log("Hi1 ");

@@ -8,7 +8,7 @@ import { WebPlayer } from "@cartesia/cartesia-js";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { getWeather, getWeatherSchema, createEvent, createEventSchema } from "@/app/tools";
+import { getWeather, getWeatherSchema, createEvent, createEventSchema, getEventsOnDay, getEventsOnDaySchema } from "@/app/tools";
 import { reflectiveWomanEmbedding } from "@/app/voices";
 
 const PLAY_RECORDED_AUDIO = false;
@@ -18,6 +18,8 @@ const GROQ_ORANGE = "#F55036";
 const toolHandlers: { [key: string]: (...args: any[]) => any } = {
   getWeather: getWeather,
   createEvent: createEvent,
+  getEventsOnDay: getEventsOnDay,
+
 };
 
 function useTTS(cartesia: Cartesia | null) {
@@ -117,21 +119,24 @@ async function streamCompletion(
         Ask questions to determine when the customer is free for an appointment and any other data needed to fill out the appointment form.
         The appointment form has the following fields to fill out: name, email, phone number, date, time, and description.
         When you have the above information create the event with the name as the title and location being 101 Main St, San Francisco, CA 94105.
-        Also use put the phone number and email in the description of the event. 
-
+        Also use put the phone number and email in the description of the event. Today is the 23rd of June 2024, all appointments should \
+        be after that date.
+Whenever a customer asks for an appointment date make sure to check the calendar for availability on that day.
 Double check that the information you have recieved is correct at the end of the conversation, before making the appointment.
 
-You are Samantha.
+You are Samantha. 
+DO NOT offer any appointment slots without first checking to confirm their aviailability.
+Make sure to follow through on tool requests and properly format them with proper inputs.
 
 Respond in brief natural sentences. Use tools only when necessary. Only create an event when you have gathered all
 of the necessary information.`,
       },
       ...messages,
     ],
-    tools: [getWeatherSchema, createEventSchema],
+    tools: [getWeatherSchema, createEventSchema, getEventsOnDaySchema],
     model: "llama3-70b-8192",
     temperature: 0.7,
-    max_tokens: 4096,
+    max_tokens: 8192,
     seed: 42,
     top_p: 1,
     stream: stream,
