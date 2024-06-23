@@ -1,6 +1,19 @@
 import Groq from "groq-sdk";
+import { api } from "../../convex/_generated/api";
 
-export async function getWeather({location}: {location: string}): Promise<string> {
+interface EventJson {
+  phone?: string;
+  Phone?: string;
+  summary: string;
+  [key: string]: any; // To allow additional properties
+}
+
+import { ConvexHttpClient, ConvexClient } from "convex/browser";
+export async function getWeather({
+  location,
+}: {
+  location: string;
+}): Promise<string> {
   try {
     const response = await fetch(`/api/weather?location=${location}`);
     if (response.ok) {
@@ -52,11 +65,31 @@ export const getEventsOnDaySchema: Groq.Chat.Completions.ChatCompletionTool = {
 
 export async function createEvent({event_json}: {event_json: JSON}): Promise<string> {
   try {
-    const response = await fetch('/api/calendar/insert', {
+    console.log("event_json", event_json);
+
+    // Destructure the specific keys you need
+    const { Phone, phone, summary } = event_json;
+
+    // Ensure ConvexHttpClient is properly initialized
+    const httpClient = new ConvexHttpClient(
+      process.env.NEXT_PUBLIC_CONVEX_URL || ""
+    );
+
+    // Use the destructured variables in the mutation
+    httpClient
+      .mutation(api.business.pushEventsToDatabase, {
+        phoneNumber: phone ? phone : Phone ? Phone : "",
+        summary,
+      })
+      .then(console.log);
+
+    // Send the event_json to the calendar API
+    const response = await fetch("/api/calendar/insert", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(event_json),
     });
+
     if (response.ok) {
       return JSON.stringify({ success: "Event created" });
     } else {
@@ -71,17 +104,22 @@ export const createEventSchema: Groq.Chat.Completions.ChatCompletionTool = {
   type: "function",
   function: {
     name: "createEvent",
-    description: "Creates a new google calendar event with the JSON data provided of the event description and its time",
+    description:
+      "Creates a new google calendar event with the JSON data provided of the event description and its time",
     parameters: {
       type: "object",
       properties: {
-        event_json: { type: "object", description: "The google calendar event data, which will be used to make the \
-          google calendar event, provide it in the JSON format as can be seen in the example delimited \
-          by triple backticks. Once you have all the information, confirm it with tthe user and then use this tool \
+        event_json: {
+          type: "object",
+          description:
+            "The google calendar event data, which will be used to make the \
+          google calendar event, provide it in the strict JSON format, KEEP the keys everything lowercase as can be seen in the example delimited \
+          by triple backticks dont make the function call until you have confirmed it with the user \
           ``` {\
-  'summary': 'Google I/O 2015',\
+  'summary': 'call summary',\
   'location': '800 Howard St., San Francisco, CA 94103',\
-  'description': 'A chance to hear more about Google\'s developer products.',\
+  'email': 'a@gmail.com'\
+  'phone': '4807917983',\
   'start': {\
     'dateTime': '2015-05-28T09:00:00-07:00',\
     'timeZone': 'America/Los_Angeles'\
@@ -91,7 +129,8 @@ export const createEventSchema: Groq.Chat.Completions.ChatCompletionTool = {
     'timeZone': 'America/Los_Angeles'\
   },\
   'confirmed': 'true',\
-} ``` " },
+} ``` ",
+        },
       },
     },
   },

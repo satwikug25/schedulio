@@ -10,6 +10,13 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { getWeather, getWeatherSchema, createEvent, createEventSchema, getEventsOnDay, getEventsOnDaySchema } from "@/app/tools";
 import { reflectiveWomanEmbedding } from "@/app/voices";
+import { api } from "../../convex/_generated/api";
+
+import { ConvexHttpClient, ConvexClient } from "convex/browser";
+import { useQuery } from "convex/react";
+
+
+const httpClient = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL || '');
 
 const PLAY_RECORDED_AUDIO = false;
 const GRAY_COLOR = "#30323E";
@@ -101,6 +108,8 @@ async function transcribe(blob: Blob, groq: Groq) {
 }
 
 async function streamCompletion(
+  instructions: string,
+  address: string,
   messages: Groq.Chat.ChatCompletionMessageParam[],
   groq: Groq
 ): Promise<{
@@ -110,7 +119,8 @@ async function streamCompletion(
   const startTime = performance.now();
   const stream = true;
   const toolCallDeltas = [];
-
+  console.log("Instructions: ", instructions);
+  console.log("Address: ", address);
   const response = await groq.chat.completions.create({
     messages: [
       {
@@ -118,10 +128,10 @@ async function streamCompletion(
         content: `You are a helpful local business assistant. You will aid in answering questions and booking appointments.
         Ask questions to determine when the customer is free for an appointment and any other data needed to fill out the appointment form.
         The appointment form has the following fields to fill out: name, email, phone number, date, time, and description.
-        When you have the above information create the event with the name as the title and location being 101 Main St, San Francisco, CA 94105.
-        Also use put the phone number and email in the description of the event. Today is the 23rd of June 2024, all appointments should \
-        be after that date.
+        When you have the above information create the event with the name as the title and location being ${address}.
+        Also put the phone number and email in the description of the event.By the way, today's date is ${new Date().toLocaleDateString()}, so if the date is before today, DO NOT book the appointment.
 Whenever a customer asks for an appointment date make sure to check the calendar for availability on that day.
+ If they dont mention working hours, assume they are open from 9am to 5pm on weekdays and hence dont book any appointments outside of these hours
 Double check that the information you have recieved is correct at the end of the conversation, before making the appointment.
 
 You are Samantha. 
@@ -447,6 +457,8 @@ function App({
     apiKey: groqApiKey,
     dangerouslyAllowBrowser: true,
   });
+  const instructions =  useQuery(api.business.getInstructionsByPhoneNumber, {phoneNumber: "4807918055"})?? "";
+  const addresses =  useQuery(api.business.getAddressesByPhoneNumber, {phoneNumber: "4807918055"}) ?? "";
 
   const historyRef = useRef<Groq.Chat.ChatCompletionMessageParam[]>([]);
   const [historyLastUpdate, setHistoryLastUpdate] = useState(new Date());
@@ -488,6 +500,8 @@ function App({
   const triggerCompletionFlow = async () => {
     
     const { contentBuffer: response, toolCalls } = await streamCompletion(
+      instructions,
+      addresses,
       historyRef.current,
       groq
     );

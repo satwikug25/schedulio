@@ -13,6 +13,7 @@ export default function Page() {
     address: "",
     voiceSelect: "",
     instructions: "",
+    events: [{phoneNumber: "", summary:""}],
   });
 
   const handleChange = (e) => {
@@ -30,6 +31,7 @@ export default function Page() {
       address: form.address,
       voiceSelect: form.voiceSelect,
       instructions: form.instructions,
+      events: [{phoneNumber: "", summary:""}],
     });
   };
 
