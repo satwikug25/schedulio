@@ -51,9 +51,11 @@ export default async function handler(request: NextApiRequest, response: NextApi
         calendarId: "primary",
         requestBody: event,
       });
+      console.log("Successfully added event to calendar");
       return NextResponse.json(response.data, { status: 200 });
     } catch (error) {
       response.status(500);
+      console.log("Failed to add event to calendar");
     }
   } else {
     response.status(405).json({ error: "Method not allowed" });
