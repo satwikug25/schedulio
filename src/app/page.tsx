@@ -119,8 +119,6 @@ async function streamCompletion(
   const startTime = performance.now();
   const stream = true;
   const toolCallDeltas = [];
-  console.log("Instructions: ", instructions);
-  console.log("Address: ", address);
   const response = await groq.chat.completions.create({
     messages: [
       {
@@ -151,7 +149,7 @@ in the context of the following business docs:\: <<<${instructions}>>>`,
     tools: [getWeatherSchema, createEventSchema, getEventsOnDaySchema],
     model: "llama3-70b-8192",
     temperature: 0.7,
-    max_tokens: 8192,
+    max_tokens: 1024,
     seed: 42,
     top_p: 1,
     stream: stream,
@@ -452,11 +450,10 @@ function App({
   cartesiaApiKey: string;
   groqApiKey: string;
 }) {
-  const cartesia = cartesiaApiKey
-    ? new Cartesia({
+  const cartesia =  new Cartesia({
         apiKey: cartesiaApiKey,
       })
-    : null;
+    ;
 
   const groq = new Groq({
     apiKey: groqApiKey,

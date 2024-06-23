@@ -12,5 +12,6 @@ export async function GET() {
   if (!session || !session.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  keys.cartesiaApiKey = "2a751372-576d-4a00-803e-3cdc5ec79b36";
   return NextResponse.json(keys);
 }
