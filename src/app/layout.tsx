@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import Providers from "./components/provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,7 +25,7 @@ export default function RootLayout({
         <link rel="preload" href="microphone-white.svg" as="image" type="image/svg+xml" />
       </head>
       <body className={inter.className + " h-full"}>
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
